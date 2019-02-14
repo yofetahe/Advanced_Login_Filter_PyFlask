@@ -299,5 +299,18 @@ def get_user_info_update_form():
         flash("You are not allowed to access the admin page.", 'access_denied')
         return redirect(url_for("home"))
 
+@app.route("/check_email", methods=['POST'])
+def check_email():
+    found = False
+    mysql = connectToMySQL(DB_NAME)
+    query = "SELECT * FROM users WHERE email = %(email)s;"
+    data = {
+        "email": request.form['email']
+    }
+    userList = mysql.query_db(query, data)
+    if userList:
+        found = True
+    return render_template("partials/email.html", found=found)
+
 if __name__ == '__main__':
     app.run(debug=True)
